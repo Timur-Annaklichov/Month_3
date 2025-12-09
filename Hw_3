@@ -1,0 +1,29 @@
+import flet as ft
+from datetime import datetime
+
+def main(page: ft.Page):
+    page.title = "Приветствие"
+    page.padding = 20
+    
+    greeting = ft.Text()
+    name_input = ft.TextField(label="Введите ваше имя", width=300)
+    
+    def on_click(e):
+        name = name_input.value.strip()
+        if name:
+            time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            greeting.value = f"{time} - Привет, {name}!"
+        else:
+            greeting.value = "Пожалуйста, введите имя"
+        page.update()
+    
+    page.add(
+        ft.Text("Приветствие", size=20),
+        ft.Divider(height=10),
+        name_input,
+        ft.ElevatedButton("Поприветствовать", on_click=on_click),
+        ft.Divider(height=10),
+        greeting
+    )
+
+ft.app(target=main)
