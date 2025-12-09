@@ -1,0 +1,55 @@
+import flet as ft
+from datetime import datetime
+
+def main(page: ft.Page):
+    page.title = "Приветствие"
+    page.padding = 20
+    
+    history = []
+    message = ft.Text()
+    history_text = ft.Text("История пуста!")
+    
+    name_input = ft.TextField(label="Имя")
+    
+    def greet(e):
+        name = name_input.value
+        if name:
+            time = datetime.now().strftime("%H:%M")
+            text = f"{time} - Привет, {name}!"
+            message.value = text
+            history.append(text)
+            name_input.value = ""
+        else:
+            message.value = "Введите имя"
+        show_history()
+    
+    def delete_last(e):
+        if history:
+            history.pop()
+            message.value = "Удалено"
+        else:
+            message.value = "История пуста"
+        show_history()
+    
+    def show_history():
+        if history:
+            result = ""
+            for item in history:
+                result += item + "\n"
+            history_text.value = result
+        else:
+            history_text.value = "История пуста!"
+        page.update()
+    
+    page.add(
+        name_input,
+        ft.Row([
+            ft.ElevatedButton("Поприветствовать", on_click=greet),
+            ft.ElevatedButton("Удалить последнее", on_click=delete_last)
+        ]),
+        message,
+        ft.Divider(height=10),
+        history_text
+    )
+
+ft.app(target=main)
