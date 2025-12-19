@@ -1,0 +1,59 @@
+import flet as ft
+from datetime import datetime
+
+def main(page: ft.Page):
+    page.title = "Приветствие"
+    page.padding = 20
+    page.theme_mode = ft.ThemeMode.LIGHT
+    
+    greeting = ft.Text()
+    name_input = ft.TextField(
+        label="Введите ваше имя", 
+        width=300,
+        counter_text="0/100",
+        max_length=100
+    )
+    
+    def on_change(e):
+        current_length = len(name_input.value)
+        name_input.counter_text = f"{current_length}/100"
+        
+        if current_length > 100:
+            name_input.error_text = "Превышен лимит в 100 символов!"
+            greeting.value = "❌ Слишком длинное имя! Максимум 100 символов."
+            greeting.color = "red"
+        else:
+            name_input.error_text = None
+            if greeting.value and "❌" in greeting.value:
+                greeting.value = ""
+        
+        page.update()
+    
+    def on_click(e):
+        name = name_input.value.strip()
+        current_length = len(name)
+        
+        if current_length > 100:
+            greeting.value = "❌ Слишком длинное имя! Максимум 100 символов."
+            greeting.color = "red"
+        elif name:
+            time = datetime.now().strftime("%Y:%m:%d - %H:%M:%S")
+            greeting.value = f"{time} - Привет, {name}!"
+            greeting.color = "green"
+        else:
+            greeting.value = "❌ Введите имя!"
+            greeting.color = "red"
+        page.update()
+    
+    name_input.on_change = on_change
+    
+    page.add(
+        ft.Text("Приветствие по времени", size=20, weight="bold"),
+        ft.Divider(height=20),
+        name_input,
+        ft.ElevatedButton("Поприветствовать", on_click=on_click),
+        ft.Divider(height=20),
+        greeting
+    )
+
+ft.app(target=main)
